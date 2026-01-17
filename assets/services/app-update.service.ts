@@ -1,16 +1,17 @@
-import { inject, Injectable } from '@angular/core';
+import {  Injectable } from '@angular/core';
 import { AppUpdate, AppUpdateAvailability } from '@capawesome/capacitor-app-update';
 import { Browser } from '@capacitor/browser';
 import { App } from '@capacitor/app';
-import { cacheSrc } from './navService';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({ providedIn: 'root' })
-export class AppUpdateService {
-  private storage = inject(cacheSrc);
-    
+export class AppUpdateService { 
   async checkForUpdate() {
+     if (!Capacitor.isNativePlatform()) {
+        console.log('⚠ Not native platform');
+        return false;
+      }
     const result = await AppUpdate.getAppUpdateInfo();
-    
     const available = result.updateAvailability === AppUpdateAvailability.UPDATE_AVAILABLE;
     if (!available) {
       console.log('✅ App is up to date');
